@@ -98,7 +98,7 @@ func main() {
 		instance.RunAtStartup = e.RunAtStartup
 
 		if instance.RunAtStartup {
-			fmt.Printf("running \"%v %v\" at startup\n", instance.Application,
+			fmt.Printf("Configured to execute \"%v %v\" at multi-cron start\n", instance.Application,
 				strings.Join(instance.Args, " "))
 			execute(&instance)
 		}
