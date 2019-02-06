@@ -36,9 +36,9 @@ func stop(c *cron.Cron, wg *sync.WaitGroup) {
 }
 
 func execute(command *cronEntry) {
+	cstr := command.Application + " " + strings.Join(command.Args, " ")
 	t := time.Now().Format(time.RFC1123)
-	fmt.Printf("Running %v%v at %v\n", command.Application,
-		strings.Join(command.Args, " "), t)
+	fmt.Printf("Running \"%v\" at: %v\n", cstr, t)
 	// ToDo: Catch error starting
 	cmd := exec.Command(command.Application, command.Args...)
 	cmd.Stdout = os.Stdout
@@ -48,8 +48,7 @@ func execute(command *cronEntry) {
 	cmd.Wait()
 
 	t = time.Now().Format(time.RFC1123)
-	fmt.Printf("Done running %v%v at %v\n", command.Application,
-		strings.Join(command.Args, " "), t)
+	fmt.Printf("Done running \"%v\" at: %v\n", cstr, t)
 }
 
 func getCronEntries() (entries []cronEntry) {
