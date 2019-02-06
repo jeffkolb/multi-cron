@@ -78,7 +78,7 @@ func getCronEntries() (entries []cronEntry) {
 				fmt.Printf("No command exists for %v\n", strings.Split(e, "=")[0])
 			}
 		}
-		_ = entry
+		//_ = entry
 	}
 
 	fmt.Printf("%v cron schedules declared\n", len(cronEntries))
