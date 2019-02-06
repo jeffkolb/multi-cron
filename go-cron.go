@@ -10,8 +10,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/robfig/cron"
-	//"gopkg.in/robfig/cron.v2"
+	// "github.com/robfig/cron"
+	"gopkg.in/robfig/cron.v2"
 )
 
 type cronEntry struct {
@@ -38,7 +38,7 @@ func stop(c *cron.Cron, wg *sync.WaitGroup) {
 func execute(command *cronEntry) {
 	cstr := command.Application + " " + strings.Join(command.Args, " ")
 	t := time.Now().Format(time.RFC1123)
-	fmt.Printf("Running \"%v\" at: %v\n", cstr, t)
+	fmt.Printf("Running \"%v\" at: %v\n\n", cstr, t)
 	// ToDo: Catch error starting
 	cmd := exec.Command(command.Application, command.Args...)
 	cmd.Stdout = os.Stdout
@@ -48,7 +48,7 @@ func execute(command *cronEntry) {
 	cmd.Wait()
 
 	t = time.Now().Format(time.RFC1123)
-	fmt.Printf("Done running \"%v\" at: %v\n", cstr, t)
+	fmt.Printf("\nDone running \"%v\" at: %v\n\n", cstr, t)
 }
 
 func getCronEntries() (entries []cronEntry) {
@@ -87,28 +87,29 @@ func getCronEntries() (entries []cronEntry) {
 }
 
 func main() {
-	//wg := &sync.WaitGroup{}
+	fmt.Printf("================= Starting multi-cron =================\n")
+	wg := &sync.WaitGroup{}
 	// ToDo: Error Handling like WHOA
+	c := cron.New()
 	cronEntries := getCronEntries()
+	wg.Add(1)
 	for _, e := range cronEntries {
 		var instance cronEntry
 		instance.Schedule = e.Schedule
 		instance.Application = e.Application
 		instance.Args = e.Args
 		instance.RunAtStartup = e.RunAtStartup
-
+		cmdStr := instance.Application + " " + strings.Join(instance.Args, " ")
 		if instance.RunAtStartup {
-			fmt.Printf("Configured to execute \"%v %v\" at multi-cron start\n", instance.Application,
-				strings.Join(instance.Args, " "))
+			fmt.Printf("Configured to execute \"%v\" at multi-cron start\n", cmdStr)
 			execute(&instance)
 		}
-
-		c := cron.New()
-		c.AddFunc(e.Schedule, func() { execute(&instance) })
-		c.Start()
-		_ = c
-		_ = e
+		f := func() { execute(&instance) }
+		c.AddFunc(e.Schedule, f)
 	}
+	inspect := c.Entries()
+	c.Start()
+	_ = inspect
 
 	// ToDo: the cronEntries slice should return in the numerical order
 	// but we should sort the slice by number just in case.
@@ -120,5 +121,5 @@ func main() {
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
 	println(<-ch)
 	// ToDo: Write a graceful termination
-	// stop(c, wg)
+	stop(c, wg)
 }

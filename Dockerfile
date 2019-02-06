@@ -2,7 +2,7 @@ FROM golang:alpine as build
 ADD ./go-cron.go /tmp/goapp/
 WORKDIR /tmp/goapp
 RUN apk add --no-cache git \
-&&	go get github.com/robfig/cron \
+&&	go get gopkg.in/robfig/cron.v2 \
 &&	go build -o ./multi-cron \
 &&	apk del git
 
