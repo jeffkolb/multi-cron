@@ -1,7 +1,12 @@
-FROM golang:latest
+FROM golang:alpine as build
 ADD ./go-cron.go /tmp/goapp/
 WORKDIR /tmp/goapp
-RUN go get github.com/robfig/cron \
+RUN apk add --no-cache git \
+&&	go get github.com/robfig/cron \
 &&	go build -o ./multi-cron \
-&&	cp multi-cron /usr/local/bin/multi-cron
+&&	apk del git
+
+
+FROM alpine:latest
+COPY --from=build /tmp/goapp/multi-cron /usr/local/bin/multi-cron
 ENTRYPOINT ["multi-cron"]
