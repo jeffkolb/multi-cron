@@ -36,7 +36,7 @@ The command above adds 3 tasks to the multi-cron queue which:
 ## Multi-Cron Expression Format:
 
 
-### Standard Expressions
+### Standard Expressions:
 
 | Field name     | Mandatory? | Allowed values  | Allowed special characters |
 | :---           | :---       | :---            | :---                       | 
@@ -51,7 +51,7 @@ The command above adds 3 tasks to the multi-cron queue which:
 
 ***If you prefix the schedule with a `!` character, the command will also run at startup***
 
-### Expression Aliases
+### Expression Aliases:
 
 | Entry                      | Description                                | Equivalent To |
 | :---                       | :---                                       | :---          |
@@ -63,7 +63,7 @@ The command above adds 3 tasks to the multi-cron queue which:
 
 Thus, `@every 1h30m10s` would indicate a schedule that activates every `1 hour, 30 minutes, 10 seconds`.
 
-### Special Characters
+### Special Characters:
 
 `Asterisk` ( `*` )
 * The asterisk indicates that the cron expression will match for all values of the field; e.g., using an asterisk in the 5th field (month) would indicate every month.
@@ -82,7 +82,7 @@ Thus, `@every 1h30m10s` would indicate a schedule that activates every `1 hour, 
 `Question mark` ( `?` )
 * Question mark may be used instead of '*' for leaving either day-of-month or day-of-week blank.
 
-### Intervals
+### Intervals:
 
 You may also schedule a job to execute at fixed intervals. This is supported by formatting the cron spec like this:
 
@@ -94,12 +94,15 @@ Thus, `@every 5s` would run the command every `5 seconds`
 ### Notes:
 
 **Time zones**
+* **Be aware that jobs scheduled during daylight-savings leap-ahead transitions will not be run!**
 * By default, all interpretation and scheduling is done in the machine's local time zone (as provided by the Go time package http://www.golang.org/pkg/time).
     Docker generally runs all contains as `UTC` however it is possible to override that setting by launching the container with an environmental variable (`TZ`) set
-* **Be aware that jobs scheduled during daylight-savings leap-ahead transitions will not be run!**
-* Pull requests and forks are encouraged and appreciated!
+
+**Love2Merge**
+* Pull requests and forks are encouraged and appreciated ;)
 
 ---
 
 ### Links:
+* [Dockerhub project](https://hub.docker.com/r/jeffkolb/multi-cron)
 * [Full library documentation](https://godoc.org/gopkg.in/robfig/cron.v2)
