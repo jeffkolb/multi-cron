@@ -36,34 +36,39 @@ func stop(c *cron.Cron, wg *sync.WaitGroup) {
 }
 
 func execute(command *cronEntry) {
-	cstr := command.Application + " " + strings.Join(command.Args, " ")
+	commandString := command.Application + " " + strings.Join(command.Args, " ")
 	t := time.Now().Format(time.RFC1123)
-	fmt.Printf("Running \"%v\" at: %v\n\n", cstr, t)
-	// ToDo: Catch error starting
+	fmt.Printf("Running \"%v\" at: %v\n\n", commandString, t)
+	// ToDo: Catch errors here.
 	cmd := exec.Command(command.Application, command.Args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Run()
-	//ToDo: Catch error stopping
 	cmd.Wait()
-
 	t = time.Now().Format(time.RFC1123)
-	fmt.Printf("\nDone running \"%v\" at: %v\n\n", cstr, t)
+	fmt.Printf("\nDone running \"%v\" at: %v\n\n", commandString, t)
 }
 
 func getCronEntries() (entries []cronEntry) {
+	/*
+		ToDo: the cronEntries slice should return commands in the numerical order
+		however we should sort the slice by number just in case.
+		This will probably never matter but whatever.
+	*/
+
 	cronEntries := make([]cronEntry, 0)
 	runAtStartup := 0
-	// Get all cron schedules defined in environmental variables.
+	// Get all cron schedules defined by environmental variables.
 	for _, e := range os.Environ() {
 		var entry cronEntry
 		sch := strings.Split(e, "=")[1]
+		// ToDo: Validate schedule!
 		if strings.HasPrefix(e, "CRON_SCH") {
 			cmdKey := strings.Replace(strings.Split(e, "=")[0], "_SCH_", "_CMD_", 1)
 			argsKey := strings.Replace(strings.Split(e, "=")[0], "_SCH_", "_ARGS_", 1)
 			cmdVal, cmdExists := os.LookupEnv(cmdKey)
 			if cmdExists {
-				//Ones starting with '!' are run at startup
+				// Schedules prefixed with a '!' character are run at application start.
 				if strings.HasPrefix(sch, "!") {
 					entry.RunAtStartup = true
 					runAtStartup++
@@ -87,9 +92,9 @@ func getCronEntries() (entries []cronEntry) {
 }
 
 func main() {
+	// ToDo: Handle warnings and such.
 	fmt.Printf("================= Starting multi-cron =================\n")
 	wg := &sync.WaitGroup{}
-	// ToDo: Error Handling like WHOA
 	c := cron.New()
 	cronEntries := getCronEntries()
 	wg.Add(1)
@@ -107,19 +112,10 @@ func main() {
 		f := func() { execute(&instance) }
 		c.AddFunc(e.Schedule, f)
 	}
-	inspect := c.Entries()
-	c.Start()
-	_ = inspect
-
-	// ToDo: the cronEntries slice should return in the numerical order
-	// but we should sort the slice by number just in case.
-	// Note: No one should ever have loads of cron entries because that wouldn't be "Dockeresque".
-
-	// ToDo: Write warnings and such on errors? Maybe kill the container?
-
+	start(c, wg)
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
 	println(<-ch)
-	// ToDo: Write a graceful termination
+	// ToDo: Application should gracefully terminate.
 	stop(c, wg)
 }
