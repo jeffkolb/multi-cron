@@ -24,9 +24,12 @@ sudo docker run -d \
 ```
 
 The command above adds 3 tasks to the multi-cron queue which:
-1) Runs `echo` with the arguments `I ran at midnight` upon application start and then every day at midnight UTC
-2) Runs a `script` located at `/path/to/some/script` at 8PM UTC with no arguments
-3) Runs a `python` script located at `/path/to/python.py` every 3 hours
+
+1. Runs `echo` with the arguments `I ran at midnight` upon application start and then every day at midnight UTC
+
+2. Runs a `script` located at `/path/to/some/script` at 8PM UTC with no arguments
+
+3. Runs a `python` script located at `/path/to/python.py` every 3 hours
 
 * _If you prefix the schedule with a `!` character, the command will also run at startup_
 
