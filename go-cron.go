@@ -114,10 +114,10 @@ func main() {
 	}
 
 	// ToDo: the cronEntries slice should return in the numerical order
-	// but we should sort the slice by number.
-	// No one should ever have loads of cron entries because that wouldn't be "Dockeresque".
+	// but we should sort the slice by number just in case.
+	// Note: No one should ever have loads of cron entries because that wouldn't be "Dockeresque".
 
-	// - ToDo: Write warnings and such on errors? Maybe kill the container?
+	// ToDo: Write warnings and such on errors? Maybe kill the container?
 
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)

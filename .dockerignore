@@ -1,0 +1,10 @@
+# ignore git, Code, and random trash directories
+.git
+.idea
+.vscode
+
+# ignore files
+[Dd]ebug
+*.md
+!README.md
+DOCKERFILE
