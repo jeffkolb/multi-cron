@@ -36,11 +36,6 @@ func stop(c *cron.Cron, wg *sync.WaitGroup) {
 
 func execute(command *cronEntry) {
 
-	/*
-		t := time.Now().Format(time.RFC1123)
-		fmt.Printf("Executing %v%v at %v\n", command.Application,
-		strings.Join(command.Args, " "), t)
-	*/
 	// ToDo: Catch error starting
 	cmd := exec.Command(command.Application, command.Args...)
 	cmd.Stdout = os.Stdout
@@ -78,7 +73,6 @@ func getCronEntries() (entries []cronEntry) {
 				fmt.Printf("No command exists for %v\n", strings.Split(e, "=")[0])
 			}
 		}
-		//_ = entry
 	}
 
 	fmt.Printf("%v cron schedules declared\n", len(cronEntries))
@@ -88,9 +82,6 @@ func getCronEntries() (entries []cronEntry) {
 
 func main() {
 	//wg := &sync.WaitGroup{}
-
-	//c.AddFunc("@every 10s", func() { fmt.Println("Every 10s") })
-	//c.AddFunc("@every 15s", func() { fmt.Println("Every 15s") })
 	// ToDo: Error Handling like WHOA
 	cronEntries := getCronEntries()
 	for _, e := range cronEntries {
