@@ -17,7 +17,7 @@ configured via environmental variables, but it can also run as a stand-alone exe
 ```bash
 sudo docker run -d \
     -e CRON_SCH_1="!@daily" -e CRON_CMD_1="echo" CRON_ARGS_1 -e "I ran at midnight" \
-    -e CRON_SCH_2="0 20 * * * *" -e CRON_CMD_2="/path/to/some/script" \
+    -e CRON_SCH_2="0 0 20 * * *" -e CRON_CMD_2="/path/to/some/script" \
     -e CRON_SCH_3="@every 3h" -e CRON_CMD_3="python" -e CRON_ARGS_3="/path/to/python.py" \
     jeffkolb/multi-cron:latest
 
@@ -116,4 +116,5 @@ Thus, `@every 5s` would run the command every `5 seconds`
 ### Links
 
 * [Dockerhub project](https://hub.docker.com/r/jeffkolb/multi-cron)
+* [Github Repo](https://github.com/junkiebev/multi-cron)
 * [Full library documentation](https://godoc.org/gopkg.in/robfig/cron.v2)
