@@ -86,6 +86,10 @@ func getCronEntries() (entries []cronEntry) {
 		}
 	}
 
+	if len(cronEntries) == 0 {
+		fmt.Println("No crontab entries were found - exiting!\n")
+		os.Exit(0)
+	}
 	fmt.Printf("%v cron schedules declared\n", len(cronEntries))
 	fmt.Printf("%v commands are configured to run at startup. \n", runAtStartup)
 	return cronEntries
