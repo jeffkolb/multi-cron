@@ -16,7 +16,7 @@ configured via environmental variables, but it can also run as a stand-alone exe
 
 ```bash
 sudo docker run -d \
-    -e CRON_SCH_1="!@daily" -e CRON_CMD_1="echo" CRON_ARGS_1 -e "I ran at midnight" \
+    -e CRON_SCH_1="!@daily" -e CRON_CMD_1="echo" -e CRON_ARGS_1 "I ran at midnight" \
     -e CRON_SCH_2="0 0 20 * * *" -e CRON_CMD_2="/path/to/some/script" \
     -e CRON_SCH_3="@every 3h" -e CRON_CMD_3="python" -e CRON_ARGS_3="/path/to/python.py" \
     jeffkolb/multi-cron:latest
